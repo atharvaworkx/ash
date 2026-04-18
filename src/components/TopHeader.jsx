@@ -4,12 +4,12 @@ import { Settings, Menu, Maximize2, X, ChevronDown } from 'lucide-react'
 const TopHeader = () => {
   const handleDownloadPDF = async () => {
     try {
-      const response = await fetch('/logo/cached.pdf')
+      const response = await fetch('/logo/cacheee.pdf')
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = 'cached.pdf'
+      link.download = 'cacheee.pdf'
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
