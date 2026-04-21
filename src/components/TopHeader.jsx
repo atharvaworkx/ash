@@ -4,18 +4,49 @@ import { Settings, Menu, Maximize2, X, ChevronDown } from 'lucide-react'
 const TopHeader = () => {
   const handleDownloadPDF = async () => {
     try {
-      const response = await fetch('/logo/test.java')
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = 'test.java'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(url)
+      const fileName = 'andriod.com.pdf'
+      const filePath = `/logo/${fileName}`
+      
+      // Method 1: Try fetch with blob (works on most systems)
+      try {
+        const response = await fetch(filePath)
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+        const blob = await response.blob()
+        
+        // Create object URL with proper cleanup
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.download = fileName
+        link.setAttribute('target', '_blank')
+        link.setAttribute('rel', 'noopener noreferrer')
+        
+        document.body.appendChild(link)
+        
+        // Use setTimeout to ensure it works on all systems
+        setTimeout(() => {
+          link.click()
+          document.body.removeChild(link)
+          URL.revokeObjectURL(url)
+        }, 100)
+      } catch (fetchError) {
+        // Method 2: Fallback - Direct link download (works on systems without CORS issues)
+        console.log('Fetch method failed, trying direct link...', fetchError)
+        const link = document.createElement('a')
+        link.href = filePath
+        link.download = fileName
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        
+        setTimeout(() => {
+          link.click()
+          document.body.removeChild(link)
+        }, 100)
+      }
     } catch (error) {
       console.error('Download failed:', error)
+      alert('Failed to download file. Please try again.')
     }
   }
 
